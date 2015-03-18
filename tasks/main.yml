@@ -41,7 +41,7 @@
     state: started
     enabled: yes
   with_items:
-    - mongodb
+    - mongod
     - qpidd
     - httpd
   tags: pulp
