@@ -1,0 +1,18 @@
+# roles/pulp/handlers/main.yml
+---
+
+- name: restart mongodb
+  service:
+    name: mongodb
+    status: restarted
+
+- name: restart qpidd
+  service:
+    name: qpidd
+    status: restarted
+
+- name: restart httpd
+  service:
+    name: httpd
+    status: restarted
+

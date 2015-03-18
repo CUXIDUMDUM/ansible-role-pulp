@@ -1,0 +1,48 @@
+# roles/pulp/tasks/main.yml
+---
+- name: Install Pulp repository
+  copy:
+    src: rhel-pulp.repo
+    dest: /etc/yum.repos.d/rhel-pulp.repo
+    mode: '0644'
+  tags: pulp
+
+- name: Instal EPEL repository
+  yum:
+    pkg: epel-release
+    state: installed
+  tags: pulp
+
+- name: install Pulp and dependencies
+  yum:
+    pkg: "{{ item }}"
+    state: installed
+  with_items:
+    - mongodb-server
+    - httpd
+    - qpid-cpp-server
+    - qpid-cpp-server-store
+    - pulp-server
+    - pulp-selinux
+    - pulp-rpm-plugins
+  tags: pulp
+
+- name: Configure Qpid
+  copy:
+    src: qpidd.conf
+    dest: /etc/qpid/qpidd.conf
+    mode: '0644'
+  notify: restart qpidd
+  tags: pulp
+
+- name: Start services
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - mongodb
+    - qpidd
+    - httpd
+  tags: pulp
+
