@@ -22,6 +22,7 @@
     - httpd
     - qpid-cpp-server
     - qpid-cpp-server-store
+    - python-qpid-qmf
     - pulp-server
     - pulp-selinux
     - pulp-rpm-plugins
@@ -35,6 +36,15 @@
   notify: restart qpidd
   tags: pulp
 
+- name: Configure Pulp server
+  template:
+    src: etc_pulp_server.conf
+    dest: /etc/pulp/server.conf
+    mode: '0640'
+    owner: 'root'
+    group: 'apache'
+  tags: pulp
+
 - name: Start services
   service:
     name: "{{ item }}"
@@ -45,4 +55,26 @@
     - qpidd
     - httpd
   tags: pulp
+
+# TODO: a decent check to determine whether the database already is set up
+#- name: Check if Pulp database already exists
+#  stat:
+#    path: /var/lib/mongodb/{{ pulp_database|default('pulp_database') }}.ns
+#  register: pulpdb
+
+- name: Initialise database
+  shell: sudo -u apache pulp-manage-db
+#  when: pulpdb.stat.isfile is not defined
+
+# TODO: configure pulp workers in /etc/default/pulp_workers
+
+- name: Start Pulp workers
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - pulp_workers
+    - pulp_celerybeat
+    - pulp_resource_manager
 
