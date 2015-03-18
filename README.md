@@ -1,8 +1,11 @@
 # Ansible role `bertvv.pulp`
 
-An Ansible role for PURPOSE. Specifically, the responsibilities of this role are to:
+An Ansible role for setting up and managint Pulp. Specifically, the responsibilities of this role are to:
 
--
+- Install Pulp and its dependencies
+- Manage Pulp configuration
+
+**Remark** that this role is far from production ready. At this time, it will automate the installation, as described in the [Pulp documentation](https://pulp-user-guide.readthedocs.org/en/2.5-release/installation.html), up to the heading "Admin client".
 
 ## Requirements
 
@@ -10,10 +13,7 @@ No specific requirements
 
 ## Role Variables
 
-
-| Variable   | Required | Default | Comments (type)  |
-| :---       | :---     | :---    | :---             |
-| `role_var` | no       | -       | (scalar) PURPOSE |
+You can set all variables in the [`/etc/pulp/server.conf`](https://github.com/pulp/pulp/blob/master/server/etc/pulp/server.conf) configuration file by adding prefix `pulp`. E.g. to change setting `server_name`, set a variable `pulp_server_name`. When not set, the default values will be applied.
 
 ## Dependencies
 
